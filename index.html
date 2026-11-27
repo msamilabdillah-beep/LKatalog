@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LKatalog — Katalog digital resmi produk UMKM Kota Langsa, Aceh. Cari produk lokal, cek harga, dan kelola etalase toko UMKM dengan mudah." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;" />
+  <title>LKatalog — Katalog Produk UMKM Kota Langsa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+  <!-- Header & Navigasi Mobile-First -->
+  <header class="site-header sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+    <div class="container-main flex items-center justify-between gap-3 py-3">
+      <a href="#katalog" id="brandHomeLink" class="brand-logo flex items-center gap-2.5 focus:outline-none">
+        <span class="brand-mark flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-yellow-400 font-extrabold text-lg shadow-sm" aria-hidden="true">LK</span>
+        <span class="brand-text-col">
+          <span class="brand-name">LKatalog</span>
+          <span class="brand-sub">UMKM Kota Langsa</span>
+        </span>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Navigasi utama">
+        <button type="button" id="navCatalogBtn" class="nav-pill nav-pill-active">Katalog Produk</button>
+        <button type="button" id="navFavBtn" class="nav-pill">
+          <span>Tersimpan</span>
+          <span id="favCountBadge" class="badge-count">0</span>
+        </button>
+        <button type="button" id="navDashboardBtn" class="nav-pill hidden">Kelola Toko</button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" id="authActionBtn" class="btn-primary">Masuk Toko</button>
+        <button type="button" id="logoutBtn" class="btn-outline-dark hidden">Keluar</button>
+        <button type="button" id="mobileMenuBtn" class="btn-icon mobile-only" aria-label="Buka menu navigasi" aria-expanded="false">
+          <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div id="mobileMenuPanel" class="mobile-menu mobile-only hidden">
+      <div class="container-main flex flex-col gap-2 py-3">
+        <button type="button" id="mobileCatalogBtn" class="mobile-nav-item mobile-nav-active">Katalog Produk</button>
+        <button type="button" id="mobileFavBtn" class="mobile-nav-item">
+          <span>Produk Tersimpan</span>
+          <span id="mobileFavCountBadge" class="badge-count">0</span>
+        </button>
+        <button type="button" id="mobileDashboardBtn" class="mobile-nav-item hidden">Kelola Toko Saya</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-main py-6 md:py-8">
+    <!-- Hero Ringkas -->
+    <section id="katalog" class="hero-banner rounded-3xl p-6 md:p-8 mb-6">
+      <div class="hero-grid">
+        <div>
+          <span class="hero-tag">Etalase Resmi UMKM Lokal</span>
+          <h1 class="hero-title mt-3">Temukan Produk Unggulan UMKM Kota Langsa</h1>
+          <p class="hero-desc mt-2.5">
+            Jelajahi kuliner olahan mangrove, kopi, camilan, hingga kerajinan dari 5 kecamatan di Kota Langsa lengkap dengan harga transparan langsung dari pelaku usaha.
+          </p>
+          <div class="hero-actions mt-5 flex flex-wrap gap-2.5">
+            <a href="#daftar-produk" id="exploreBtn" class="btn-yellow">Jelajahi Katalog</a>
+            <button type="button" id="heroSellerBtn" class="btn-dark-soft">Daftarkan Toko UMKM</button>
+          </div>
+        </div>
+        <div class="hero-stats-grid" aria-label="Ringkasan statistik katalog">
+          <div class="stat-card">
+            <span class="stat-label">Produk Aktif</span>
+            <strong id="statTotalProducts" class="stat-value">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Toko UMKM</span>
+            <strong id="statTotalStores" class="stat-value">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Kecamatan</span>
+            <strong id="statTotalDistricts" class="stat-value">5</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel Pencarian & Filter (Tampilan Katalog / Favorit) -->
+    <section id="catalogSection" aria-label="Pencarian dan daftar produk">
+      <div class="filter-panel rounded-2xl bg-white border border-slate-200 p-4 md:p-5 mb-6 shadow-sm">
+        <div class="search-row">
+          <div class="search-box">
+            <label for="searchInput" class="sr-only">Cari produk atau toko UMKM Kota Langsa</label>
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="searchInput" class="input-search" placeholder="Cari produk, misal: sirup mangrove, terasi, keripik, kopi..." autocomplete="off" maxlength="80" />
+            <button type="button" id="clearSearchBtn" class="clear-search-btn hidden" aria-label="Hapus pencarian">×</button>
+          </div>
+
+          <div class="filter-selects">
+            <div>
+              <label for="districtFilter" class="sr-only">Filter Kecamatan</label>
+              <select id="districtFilter" class="select-field">
+                <option value="Semua">Semua Kecamatan</option>
+                <option value="Langsa Kota">Langsa Kota</option>
+                <option value="Langsa Barat">Langsa Barat</option>
+                <option value="Langsa Baro">Langsa Baro</option>
+                <option value="Langsa Lama">Langsa Lama</option>
+                <option value="Langsa Timur">Langsa Timur</option>
+              </select>
+            </div>
+            <div>
+              <label for="sortSelect" class="sr-only">Urutkan produk</label>
+              <select id="sortSelect" class="select-field">
+                <option value="newest">Terbaru</option>
+                <option value="price-asc">Harga Termurah</option>
+                <option value="price-desc">Harga Termahal</option>
+                <option value="name-asc">Nama A–Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chip Kategori -->
+        <div id="categoryChips" class="category-chips mt-4" role="tablist" aria-label="Kategori produk"></div>
+      </div>
+
+      <!-- Informasi Hasil -->
+      <div id="daftar-produk" class="catalog-bar">
+        <div>
+          <h2 id="catalogHeading" class="text-xl font-bold text-slate-900">Semua Produk UMKM</h2>
+          <p id="resultSummary" class="text-sm text-slate-600">Menampilkan produk lokal Kota Langsa</p>
+        </div>
+        <button type="button" id="resetFilterBtn" class="btn-text hidden">Reset Filter</button>
+      </div>
+
+      <!-- Grid Produk -->
+      <div id="productGrid" class="product-grid" aria-live="polite"></div>
+
+      <!-- State Kosong -->
+      <div id="emptyState" class="empty-state hidden rounded-2xl bg-white border border-slate-200 p-8 text-center">
+        <div class="empty-icon mx-auto mb-3" aria-hidden="true">🔎</div>
+        <h3 id="emptyStateTitle" class="text-lg font-bold text-slate-900">Produk tidak ditemukan</h3>
+        <p id="emptyStateDesc" class="text-sm text-slate-600 mt-1">Coba ubah kata kunci pencarian atau pilih kecamatan lain.</p>
+        <button type="button" id="emptyResetBtn" class="btn-primary mt-4">Tampilkan Semua Produk</button>
+      </div>
+    </section>
+
+    <!-- Dasbor Pengelolaan Toko (Aktif Setelah Login) -->
+    <section id="dashboardSection" class="hidden" aria-label="Dasbor pengelolaan toko UMKM">
+      <div class="dashboard-header rounded-2xl bg-slate-900 text-white p-5 md:p-6 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="dashboard-badge">Mode Pemilik Toko</span>
+          <h2 id="dashStoreName" class="text-2xl font-extrabold mt-2">Toko UMKM</h2>
+          <p id="dashStoreMeta" class="text-sm text-sky-200 mt-1">Kecamatan • Kontak</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="backToCatalogBtn" class="btn-outline-light">Lihat Katalog Publik</button>
+          <button type="button" id="openNewProductBtn" class="btn-yellow">+ Tambah Produk</button>
+        </div>
+      </div>
+
+      <div class="dashboard-layout">
+        <!-- Form Tambah / Edit Produk -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-5 md:p-6 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 id="productFormTitle" class="text-lg font-bold text-slate-900">Tambah Produk Baru</h3>
+            <button type="button" id="cancelEditBtn" class="btn-text hidden">Batal Edit</button>
+          </div>
+
+          <form id="productForm" class="form-stack" novalidate>
+            <input type="hidden" id="editProductId" value="" />
+
+            <div>
+              <label for="prodName" class="field-label">Nama Produk *</label>
+              <input type="text" id="prodName" class="input-field" placeholder="Contoh: Sirup Mangrove Organik 500ml" required maxlength="80" />
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label for="prodPrice" class="field-label">Harga (Rp) *</label>
+                <input type="number" id="prodPrice" class="input-field" placeholder="25000" min="500" max="100000000" step="500" required />
+              </div>
+              <div>
+                <label for="prodUnit" class="field-label">Satuan *</label>
+                <input type="text" id="prodUnit" class="input-field" placeholder="botol / bungkus / kg" required maxlength="25" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label for="prodCategory" class="field-label">Kategori *</label>
+                <select id="prodCategory" class="select-field" required>
+                  <option value="Kuliner & Olahan">Kuliner &amp; Olahan</option>
+                  <option value="Minuman & Kopi">Minuman &amp; Kopi</option>
+                  <option value="Camilan & Oleh-oleh">Camilan &amp; Oleh-oleh</option>
+                  <option value="Bumbu & Bahan Pokok">Bumbu &amp; Bahan Pokok</option>
+                  <option value="Kerajinan & Fashion">Kerajinan &amp; Fashion</option>
+                </select>
+              </div>
+              <div>
+                <label for="prodStock" class="field-label">Stok Tersedia *</label>
+                <input type="number" id="prodStock" class="input-field" placeholder="20" min="0" max="99999" required />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label for="prodDistrict" class="field-label">Kecamatan *</label>
+                <select id="prodDistrict" class="select-field" required>
+                  <option value="Langsa Kota">Langsa Kota</option>
+                  <option value="Langsa Barat">Langsa Barat</option>
+                  <option value="Langsa Baro">Langsa Baro</option>
+                  <option value="Langsa Lama">Langsa Lama</option>
+                  <option value="Langsa Timur">Langsa Timur</option>
+                </select>
+              </div>
+              <div>
+                <label for="prodVillage" class="field-label">Gampong / Area *</label>
+                <input type="text" id="prodVillage" class="input-field" placeholder="Contoh: Kuala Langsa" required maxlength="50" />
+              </div>
+            </div>
+
+            <div>
+              <label for="prodDesc" class="field-label">Deskripsi Produk *</label>
+              <textarea id="prodDesc" class="textarea-field" rows="3" placeholder="Jelaskan bahan, keunggulan, berat bersih, atau cara pemesanan..." required maxlength="300"></textarea>
+            </div>
+
+            <div>
+              <label for="prodImageFile" class="field-label">Foto Produk (Opsional, PNG/JPG/WebP maks. 1 MB)</label>
+              <input type="file" id="prodImageFile" class="file-input" accept="image/png,image/jpeg,image/webp" />
+              <p class="field-hint">Jika dikosongkan, produk otomatis memakai ilustrasi kategori khas LKatalog.</p>
+            </div>
+
+            <p id="productFormError" class="form-error hidden" role="alert"></p>
+
+            <button type="submit" id="saveProductBtn" class="btn-green w-full">Simpan Produk ke Katalog</button>
+          </form>
+        </div>
+
+        <!-- Daftar Produk Milik Toko -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-5 md:p-6 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 class="text-lg font-bold text-slate-900">Etalase Produk Toko Anda</h3>
+            <span id="myProductCount" class="badge-sky">0 produk</span>
+          </div>
+          <div id="myProductsList" class="my-products-list"></div>
+          <div id="myProductsEmpty" class="empty-mini hidden">
+            Belum ada produk di toko Anda. Isi formulir di samping untuk mulai menampilkan produk ke masyarakat Kota Langsa.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer border-t border-slate-200 bg-white mt-12">
+    <div class="container-main footer-inner">
+      <div>
+        <strong class="text-slate-900">LKatalog</strong> — Katalog Produk UMKM Kota Langsa, Aceh.
+      </div>
+      <div class="footer-links">
+        <a href="#katalog" id="footerTopLink" class="footer-link">Kembali ke Atas</a>
+        <button type="button" id="footerSellerLink" class="footer-link">Masuk / Daftar Toko</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Autentikasi Toko (Masuk / Daftar) -->
+  <div id="authModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h2 id="authModalTitle" class="text-lg font-extrabold text-slate-900">Akun Toko UMKM</h2>
+        <button type="button" id="closeAuthModalBtn" class="btn-close" aria-label="Tutup jendela">×</button>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" id="tabLoginBtn" class="auth-tab auth-tab-active" role="tab" aria-selected="true">Masuk Toko</button>
+        <button type="button" id="tabRegisterBtn" class="auth-tab" role="tab" aria-selected="false">Daftar Toko Baru</button>
+      </div>
+
+      <!-- Form Login -->
+      <form id="loginForm" class="form-stack mt-4" novalidate>
+        <div>
+          <label for="loginEmail" class="field-label">Email Toko</label>
+          <input type="email" id="loginEmail" class="input-field" placeholder="tokoanda@contoh.id" required autocomplete="username" maxlength="80" />
+        </div>
+        <div>
+          <label for="loginPassword" class="field-label">Kata Sandi</label>
+          <input type="password" id="loginPassword" class="input-field" placeholder="Masukkan kata sandi" required autocomplete="current-password" minlength="6" maxlength="64" />
+        </div>
+        <p id="loginError" class="form-error hidden" role="alert"></p>
+        <button type="submit" class="btn-primary w-full">Masuk ke Dasbor Toko</button>
+        <p class="auth-note">
+          Belum punya akun toko? Klik tab <strong>Daftar Toko Baru</strong> untuk membuat akun toko lokal Anda secara langsung tanpa kredensial bawaan.
+        </p>
+      </form>
+
+      <!-- Form Daftar Toko -->
+      <form id="registerForm" class="form-stack mt-4 hidden" novalidate>
+        <div>
+          <label for="regStoreName" class="field-label">Nama Toko UMKM *</label>
+          <input type="text" id="regStoreName" class="input-field" placeholder="Contoh: Dapur Mangrove Sejahtera" required maxlength="60" />
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="regDistrict" class="field-label">Kecamatan *</label>
+            <select id="regDistrict" class="select-field" required>
+              <option value="Langsa Kota">Langsa Kota</option>
+              <option value="Langsa Barat">Langsa Barat</option>
+              <option value="Langsa Baro">Langsa Baro</option>
+              <option value="Langsa Lama">Langsa Lama</option>
+              <option value="Langsa Timur">Langsa Timur</option>
+            </select>
+          </div>
+          <div>
+            <label for="regPhone" class="field-label">No. Kontak / WA *</label>
+            <input type="tel" id="regPhone" class="input-field" placeholder="0812-3456-7890" required maxlength="20" />
+          </div>
+        </div>
+        <div>
+          <label for="regEmail" class="field-label">Email Toko *</label>
+          <input type="email" id="regEmail" class="input-field" placeholder="nama.toko@contoh.id" required autocomplete="email" maxlength="80" />
+        </div>
+        <div>
+          <label for="regPassword" class="field-label">Kata Sandi (min. 6 karakter) *</label>
+          <input type="password" id="regPassword" class="input-field" placeholder="Buat kata sandi aman" required autocomplete="new-password" minlength="6" maxlength="64" />
+        </div>
+        <p id="registerError" class="form-error hidden" role="alert"></p>
+        <button type="submit" class="btn-green w-full">Daftar &amp; Masuk Toko</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Detail Produk -->
+  <div id="detailModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <span id="detailCategoryBadge" class="badge-green">Kategori</span>
+        <button type="button" id="closeDetailModalBtn" class="btn-close" aria-label="Tutup detail produk">×</button>
+      </div>
+      <div class="detail-grid mt-4">
+        <div class="detail-media">
+          <img id="detailImage" src="" alt="Foto produk UMKM" class="detail-img" />
+        </div>
+        <div class="detail-info">
+          <h2 id="detailTitle" class="text-2xl font-extrabold text-slate-900">Nama Produk</h2>
+          <div class="detail-price-row mt-2">
+            <span id="detailPrice" class="detail-price">Rp 0</span>
+            <span id="detailUnit" class="text-sm text-slate-500">/ satuan</span>
+          </div>
+          <p id="detailDesc" class="text-sm text-slate-700 mt-4 leading-relaxed"></p>
+
+          <div class="detail-meta-box mt-5">
+            <div class="detail-meta-item">
+              <span class="meta-key">Toko UMKM</span>
+              <strong id="detailStore" class="meta-val">-</strong>
+            </div>
+            <div class="detail-meta-item">
+              <span class="meta-key">Lokasi</span>
+              <strong id="detailLocation" class="meta-val">-</strong>
+            </div>
+            <div class="detail-meta-item">
+              <span class="meta-key">Stok</span>
+              <strong id="detailStock" class="meta-val">-</strong>
+            </div>
+            <div class="detail-meta-item">
+              <span class="meta-key">Kontak Toko</span>
+              <strong id="detailContact" class="meta-val">-</strong>
+            </div>
+          </div>
+
+          <div class="detail-actions mt-5 flex flex-wrap gap-2.5">
+            <button type="button" id="copyContactBtn" class="btn-green flex-1">Salin Kontak Toko</button>
+            <button type="button" id="detailFavBtn" class="btn-outline-dark">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Hapus dalam halaman -->
+  <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-card modal-xs">
+      <h3 id="confirmTitle" class="text-lg font-bold text-slate-900">Hapus Produk?</h3>
+      <p id="confirmMessage" class="text-sm text-slate-600 mt-2">Produk yang dihapus tidak dapat dikembalikan.</p>
+      <div class="mt-5 flex justify-end gap-2">
+        <button type="button" id="confirmCancelBtn" class="btn-outline-dark">Batal</button>
+        <button type="button" id="confirmOkBtn" class="btn-danger">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wadah Notifikasi Toast -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
